@@ -38,27 +38,17 @@ public class SecurityConfig {
         return configuration.getAuthenticationManager();
     }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http)
-            throws Exception {
-
+    @org.springframework.context.annotation.Bean
+    public org.springframework.security.web.SecurityFilterChain securityFilterChain(org.springframework.security.config.annotation.web.builders.HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
-
-            .sessionManagement(session ->
-                    session.sessionCreationPolicy(
-                            SessionCreationPolicy.STATELESS))
-
+            .csrf(csrf -> csrf.disable()) 
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/api/auth/**")
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated());
-
-        http.addFilterBefore(
-                jwtFilter,
-                UsernamePasswordAuthenticationFilter.class);
-
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/employees/**").permitAll()
+                .requestMatchers("/api/attendance/**").permitAll()
+                .anyRequest().authenticated()
+            );
+        
         return http.build();
     }
 }
